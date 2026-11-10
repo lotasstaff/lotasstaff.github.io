@@ -1,0 +1,19 @@
+{
+  "name": "有限会社 朝日自動車サービス",
+  "brand": "ロータスアサヒ",
+  "tel": "078-591-5399",
+  "zip": "",
+  "address": "神戸市北区南五葉1丁目4-19",
+  "hours": [
+    { "label": "午前", "value": "9:00〜12:00" },
+    { "label": "午後", "value": "13:00〜17:00" }
+  ],
+  "closed": "毎週木曜",
+  "notice": "",
+  "lat": 34.7247028,
+  "lng": 135.1346414,
+  "links": [
+    { "title": "ロータス", "href": "http://www.lotas.co.jp/" },
+    { "title": "カーベル", "href": "http://www.carbell.jp/" }
+  ]
+}

@@ -1,0 +1,133 @@
+---
+import '../styles/global.css';
+import site from '../data/site.json';
+import nav from '../data/nav.json';
+import pages from '../data/pages.json';
+
+interface Props {
+  title: string;
+  description: string;
+  keywords: string;
+  slug: string;
+  crumbs: string[];
+  lead: boolean;
+}
+const { title, description, keywords, slug, crumbs, lead } = Astro.props;
+const file = slug === 'index' ? 'index.html' : `${slug}.html`;
+const url = `/${slug === 'index' ? '' : file}`;
+const cat = nav.find((c) => c.href === file || c.children.some((x) => x.href === file));
+const siblings = cat ? [{ title: `${cat.title} トップ`, href: cat.href }, ...cat.children] : [];
+const crumbList = [{ title: 'HOME', href: '/' }, ...crumbs.map((t, i) => ({ title: t, href: i === crumbs.length - 1 ? '' : (cat?.href ? `/${cat.href}` : '') }))];
+const footerNav = nav.filter((c) => !c.children.length && c.href !== 'index.html');
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {keywords && <meta name="keywords" content={keywords} />}
+    <link rel="canonical" href={new URL(url, 'https://www.lotas-asahi.com').href} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="inner">
+        <a class="brand" href="/">
+          <span class="brand-tag">地域のみなさまのための整備工場</span>
+          <span class="brand-name">{site.brand}</span>
+          <span class="brand-corp">{site.name}</span>
+        </a>
+        <a class="head-tel" href={`tel:${site.tel}`}><small>TEL</small><strong>{site.tel}</strong></a>
+      </div>
+      <details class="nav-sp">
+        <summary>メニュー</summary>
+        <ul>
+          {nav.map((c) => (
+            <li class={c.href === file || c.children.some((x) => x.href === file) ? 'current' : ''}>
+              <a href={c.href === 'index.html' ? '/' : `/${c.href}`}>{c.title}</a>
+            </li>
+          ))}
+        </ul>
+      </details>
+    </header>
+
+    <div class="layout">
+      <main>
+        {slug !== 'index' && crumbs.length > 0 && (
+          <ol class="breadcrumb">
+            {crumbList.map((c) => <li>{c.href ? <a href={c.href}>{c.title}</a> : c.title}</li>)}
+          </ol>
+        )}
+        <slot />
+
+        {lead && (
+          <section class="cta">
+            <h2>無料のご相談はこちらからお気軽に</h2>
+            <p>お電話でもネットからでもお気軽にご相談ください。</p>
+            <p>お電話でのお問合せは<br /><a class="tel-big" href={`tel:${site.tel}`}>{site.tel}</a><br />で受け付けております。</p>
+            <p>お問合せフォームは24時間受付をしておりますのでお気軽にお問合せください。</p>
+            <p class="small">※お電話又はネットでの作業工賃などのお問い合わせは誤って料金をお伝えする可能性もございますのでご来店をお願いしております。お電話又はネットにてご来店のご予約をお願いいたします。</p>
+            <p><a class="button" href="/contact.html">お問合せフォームはこちら</a></p>
+          </section>
+        )}
+
+        {siblings.length > 1 && (
+          <section class="siblings">
+            <h3>{cat?.title}の他のページ</h3>
+            <ul>
+              {siblings.filter((x) => x.href !== file).map((x) => <li><a href={`/${x.href}`}>{x.title}</a></li>)}
+            </ul>
+          </section>
+        )}
+      </main>
+
+      <aside class="sidebar">
+        <section class="side-logo">
+          <a href="/"><img src="/images/10524_101_top.jpg.webp" alt="朝日自動車サービス外観" width="188" height="141" /></a>
+        </section>
+        <section class="side-hours">
+          <dl>
+            <dt>営業時間</dt>
+            {site.hours.map((h) => <dd>{h.label} {h.value}</dd>)}
+            <dt>定休日</dt>
+            <dd>{site.closed}</dd>
+          </dl>
+          {site.notice && <p class="side-notice">{site.notice}</p>}
+        </section>
+        <section class="menu-tree">
+          <h3>メニュー</h3>
+          <ul>
+            {nav.map((c) => (
+              <li>
+                <a href={c.href === 'index.html' ? '/' : `/${c.href}`}>{c.title}</a>
+                {c.children.length > 0 && (
+                  <details open={c.href === file || c.children.some((x) => x.href === file)}>
+                    <summary>{c.title}のページ一覧</summary>
+                    <ul>{c.children.map((x) => <li class={x.href === file ? 'current' : ''}><a href={`/${x.href}`}>{x.title}</a></li>)}</ul>
+                  </details>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section class="shop-info">
+          <h3>店舗情報</h3>
+          <p class="name">{site.name}</p>
+          <p>{site.address}</p>
+          <p><a href="/access.html">アクセス・地図</a></p>
+        </section>
+      </aside>
+    </div>
+
+    <footer class="site-footer">
+      <p class="name">{site.name}</p>
+      <p>{site.address} / <a href={`tel:${site.tel.replaceAll('-', '')}`}>TEL {site.tel}</a></p>
+      <ul>{footerNav.map((c) => <li><a href={`/${c.href}`}>{c.title}</a></li>)}</ul>
+      <p class="copy">&copy; {new Date().getFullYear()} {site.name}</p>
+    </footer>
+  </body>
+</html>

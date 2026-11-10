@@ -1,0 +1,32 @@
+
+div.baloon {
+   background-color: #fff;
+   border-radius: 50px;
+   box-shadow: 2px 3px 4px 2px rgba(0,0,0,0.2);
+   color: #333;
+   font-size: 11px;
+   padding: 5px;
+   position: absolute;
+   z-index: 5000;
+}
+
+div.baloon:before{
+   width: 7px;
+   height: 10px;
+   background: #fff;
+   border-radius: 0 0 17px 0 / 0 0 13px 0;
+   box-shadow: -4px 2px 0 -3px transparent inset;
+   content: "";
+   display: block;
+   position: absolute;
+   top: 21px;
+}
+
+div.baloon a{
+   margin: 0 3px 0 0;
+}
+
+div.baloon a img {
+   width: 17px;
+   height: 17px;
+}
