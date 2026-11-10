@@ -28,7 +28,7 @@ const footerNav = nav.filter((c) => !c.children.length && c.href !== 'index.html
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     {keywords && <meta name="keywords" content={keywords} />}
-    <link rel="canonical" href={new URL(url, 'https://www.lotas-asahi.com').href} />
+    <link rel="canonical" href={new URL(url, Astro.site).href} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" />
